@@ -1,16 +1,18 @@
 const express = require('express');
 const cors = require('cors');
-const profileRoutes = require('./src/routes/profileRoutes');
 
 const app = express();
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 3000;  // Setting the port dynamically
 
 // Middleware
-app.use(cors());
-app.use(express.json());
+app.use(cors());  // Enabling Cross-Origin Resource Sharing (CORS)
+app.use(express.json());  // Enabling JSON body parsing
 
 // Routes
-app.use('/api', profileRoutes);
+// You might want to define some routes here, for example:
+app.get('/', (req, res) => {
+  res.send('Server is running');
+});
 
 // Start the server
 app.listen(port, () => {
