@@ -6,7 +6,7 @@ class ServiceRequestService {
   }
 
   async getServiceRequests() {
-    return await ServiceRequest.find().populate("userId", "name email"); // Show user details
+    return await ServiceRequest.find().populate("userId", "name"," email"); // Show user details
   }
 
   async updateServiceRequest(id, updateData) {
