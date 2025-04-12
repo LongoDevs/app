@@ -1,10 +1,10 @@
 const { Sequelize, DataTypes } = require("sequelize");
 const path = require("path");
 
-// 🔧 Load environment variables
+//Load environment variables
 require("dotenv").config();
 
-// ✅ Connect to PostgreSQL via Sequelize
+//Connect to PostgreSQL via Sequelize
 const sequelize = new Sequelize(process.env.DATABASE_URL, {
   dialect: "postgres",
   logging: false,
