@@ -1,9 +1,14 @@
 const express = require('express');
-const router = express.Router();
-const controller = require('./emailConfig.controller');
+const {
+  saveEmailConfig,
+  getEmailConfig,
+  sendEmails
+} = require('./emailConfig.controller');
 
-router.post('/api/admin/email-config', controller.saveEmailConfig);
-router.get('/api/admin/email-config', controller.getEmailConfig);
-router.post('/send-test', sendTestEmail); 
+const router = express.Router();
+
+router.post('/email-config', saveEmailConfig);
+router.get('/email-config', getEmailConfig);
+router.post('/send-email', sendEmails);
 
 module.exports = router;
