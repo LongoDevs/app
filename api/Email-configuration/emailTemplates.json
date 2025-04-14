@@ -1,0 +1,17 @@
+[
+  {
+    "key": "welcome",
+    "subject": "Welcome to Our Platform!",
+    "body": "Hi {{name}},\n\nThanks for joining us. We’re excited to have you on board."
+  },
+  {
+    "key": "service-update",
+    "subject": "Important Service Update",
+    "body": "Dear {{name}},\n\nPlease be informed of a new update to our service offerings."
+  },
+  {
+    "key": "newsletter",
+    "subject": "Monthly Newsletter",
+    "body": "Hello {{name}},\n\nHere’s what’s new this month!"
+  }
+]
