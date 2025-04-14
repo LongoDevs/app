@@ -18,30 +18,30 @@ const EmailSettings = () => {
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
-    setConfig({ ...config, [name]: type === 'checkbox' ? checked : value });
+    setConfig(prev => ({ ...prev, [name]: type === 'checkbox' ? checked : value }));
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       await axios.post('/api/Email-configuration/email-config', config);
-      alert('SMTP config saved!');
+      alert('SMTP configuration saved successfully.');
     } catch (err) {
       console.error(err);
-      alert('Failed to save config');
+      alert('Failed to save SMTP config.');
     }
   };
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
       <input name="host" value={config.host} onChange={handleChange} placeholder="SMTP Host" required />
-      <input name="port" type="number" value={config.port} onChange={handleChange} placeholder="SMTP Port" required />
+      <input name="port" type="number" value={config.port} onChange={handleChange} placeholder="Port" required />
       <label>
         Secure:
         <input type="checkbox" name="secure" checked={config.secure} onChange={handleChange} />
       </label>
-      <input name="user" value={config.user} onChange={handleChange} placeholder="Email Address" required />
-      <input name="pass" type="password" value={config.pass} onChange={handleChange} placeholder="Password" required />
+      <input name="user" value={config.user} onChange={handleChange} placeholder="Sender Email" required />
+      <input name="pass" type="password" value={config.pass} onChange={handleChange} placeholder="Sender Password" required />
       <button type="submit">Save Configuration</button>
     </form>
   );

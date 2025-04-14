@@ -1,3 +1,10 @@
+const express = require('express');
+const emailRoutes = require('./emailConfiguration/emailConfig.routes');
+
+const app = express();
+app.use(express.json());
+
+app.use('/api/Email-configuration', emailRoutes);
 const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
