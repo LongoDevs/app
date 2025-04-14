@@ -1,3 +1,5 @@
+const fs = require('fs');
+const path = require('path');
 const prisma = require('../../prismaClient');
 const { sendEmail } = require('./mailService');
 
@@ -37,6 +39,30 @@ const getEmailConfig = async (req, res) => {
   }
 };
 
+// List all users
+const getUsers = async (req, res) => {
+  try {
+    const users = await prisma.user.findMany();
+    res.status(200).json(users);
+  } catch (err) {
+    console.error('Get users error:', err);
+    res.status(500).json({ error: 'Failed to fetch users' });
+  }
+};
+
+// Fetch email templates from JSON file
+const getEmailTemplates = (req, res) => {
+  try {
+    const templatesPath = path.join(__dirname, 'emailTemplates.json');
+    const templates = JSON.parse(fs.readFileSync(templatesPath, 'utf-8'));
+    const simplified = templates.map(t => ({ key: t.key, subject: t.subject }));
+    res.status(200).json(simplified);
+  } catch (err) {
+    console.error('Read templates error:', err);
+    res.status(500).json({ error: 'Failed to read email templates' });
+  }
+};
+
 // Send emails to selected users
 const sendEmails = async (req, res) => {
   try {
@@ -53,11 +79,15 @@ const sendEmails = async (req, res) => {
 
     if (!users.length) return res.status(400).json({ error: 'No recipients found' });
 
-    const template = await prisma.emailTemplate.findUnique({ where: { key: templateKey } });
+    const templatesPath = path.join(__dirname, 'emailTemplates.json');
+    const templates = JSON.parse(fs.readFileSync(templatesPath, 'utf-8'));
+    const template = templates.find(t => t.key === templateKey);
+
     if (!template) return res.status(404).json({ error: 'Email template not found' });
 
     for (const user of users) {
-      await sendEmail(user.email, template.subject, template.body);
+      const personalizedBody = template.body.replace('{{name}}', user.name);
+      await sendEmail(user.email, template.subject, personalizedBody);
     }
 
     res.status(200).json({ message: 'Emails sent successfully' });
@@ -70,5 +100,7 @@ const sendEmails = async (req, res) => {
 module.exports = {
   saveEmailConfig,
   getEmailConfig,
+  getUsers,
+  getEmailTemplates,
   sendEmails
 };
