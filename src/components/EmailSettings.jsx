@@ -25,24 +25,24 @@ const EmailSettings = () => {
     e.preventDefault();
     try {
       await axios.post('/api/Email-configuration/email-config', config);
-      alert('SMTP configuration saved successfully!');
+      alert('SMTP configuration saved successfully.');
     } catch (err) {
       console.error(err);
-      alert('Failed to save SMTP configuration.');
+      alert('Failed to save SMTP config.');
     }
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4 p-4 bg-white shadow-md rounded-md max-w-md mx-auto mt-10">
-      <input name="host" value={config.host} onChange={handleChange} placeholder="SMTP Host" required className="w-full p-2 border" />
-      <input name="port" type="number" value={config.port} onChange={handleChange} placeholder="SMTP Port" required className="w-full p-2 border" />
-      <label className="flex items-center space-x-2">
-        <span>Secure:</span>
+    <form onSubmit={handleSubmit} className="space-y-4">
+      <input name="host" value={config.host} onChange={handleChange} placeholder="SMTP Host" required />
+      <input name="port" type="number" value={config.port} onChange={handleChange} placeholder="Port" required />
+      <label>
+        Secure:
         <input type="checkbox" name="secure" checked={config.secure} onChange={handleChange} />
       </label>
-      <input name="user" value={config.user} onChange={handleChange} placeholder="Email Address" required className="w-full p-2 border" />
-      <input name="pass" type="password" value={config.pass} onChange={handleChange} placeholder="Email Password" required className="w-full p-2 border" />
-      <button type="submit" className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Save Configuration</button>
+      <input name="user" value={config.user} onChange={handleChange} placeholder="Sender Email" required />
+      <input name="pass" type="password" value={config.pass} onChange={handleChange} placeholder="Sender Password" required />
+      <button type="submit">Save Configuration</button>
     </form>
   );
 };
