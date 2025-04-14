@@ -1,36 +1,36 @@
-// mailService.js
 const nodemailer = require('nodemailer');
-const { PrismaClient } = require('@prisma/client');
-const { decrypt } = require('./encryption.util');
+const prisma = require('../../prismaClient');
 
-const prisma = new PrismaClient();
+let transporter;
 
-const createTransporter = async () => {
-  const config = await prisma.emailConfig.findUnique({ where: { id: 1 } });
+const setupTransporter = async () => {
+  const config = await prisma.emailConfig.findFirst();
   if (!config) throw new Error('SMTP configuration not found');
 
-  const decryptedPass = decrypt(config.pass);
-
-  return nodemailer.createTransport({
+  transporter = nodemailer.createTransport({
     host: config.host,
     port: config.port,
     secure: config.secure,
     auth: {
       user: config.user,
-      pass: decryptedPass,
-    },
+      pass: config.pass
+    }
   });
 };
 
-exports.sendEmail = async (to, subject, html) => {
-  const transporter = await createTransporter();
+const sendEmail = async (to, subject, message) => {
+  if (!transporter) await setupTransporter();
 
-  const mailOptions = {
-    from: '"Admin" <no-reply@yourapp.com>',
+  const options = {
+    from: (await prisma.emailConfig.findFirst()).user,
     to,
     subject,
-    html,
+    text: message
   };
 
-  await transporter.sendMail(mailOptions);
+  return transporter.sendMail(options);
+};
+
+module.exports = {
+  sendEmail
 };
