@@ -1,54 +1,77 @@
-// server/routes/dashboard.js
-const express = require('express');
-const router = express.Router();
-const { PrismaClient } = require('@prisma/client');
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
+import { LineChart, Line, BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
 
-const prisma = new PrismaClient();
+const Dashboard = () => {
+  const [data, setData] = useState({
+    users: 0,
+    providers: 0,
+    views: 0,
+    applications: 0,
+    revenue: [],
+    services: []
+  });
 
-router.get('/users', async (req, res) => {
-  try {
-    const count = await prisma.user.count();
-    res.json({ count });
-  } catch (error) {
-    res.status(500).json({ error: 'Failed to fetch user count' });
-  }
-});
+  useEffect(() => {
+    const fetchData = async () => {
+      const [dashboardRes, revenueRes, servicesRes] = await Promise.all([
+        axios.get('/api/dashboard'),
+       
+      ]);
 
-router.get('/service-providers', async (req, res) => {
-  try {
-    const count = await prisma.serviceProvider.count();
-    res.json({ count });
-  } catch (error) {
-    res.status(500).json({ error: 'Failed to fetch provider count' });
-  }
-});
+      setData({
+        ...dashboardRes.data,
+        revenue: revenueRes.data,
+        services: servicesRes.data
+      });
+    };
 
-router.get('/page-views', async (req, res) => {
-  try {
-    const views = await prisma.pageView.aggregate({
-      _sum: {
-        count: true,
-      },
-    });
-    res.json({ views: views._sum.count || 0 });
-  } catch (error) {
-    res.status(500).json({ error: 'Failed to fetch page views' });
-  }
-});
+    fetchData();
+  }, []);
 
-router.get('/new-applications', async (req, res) => {
-  try {
-    const total = await prisma.application.count({
-      where: {
-        createdAt: {
-          gte: new Date(new Date().setDate(new Date().getDate() - 7)), // last 7 days
-        },
-      },
-    });
-    res.json({ total });
-  } catch (error) {
-    res.status(500).json({ error: 'Failed to fetch new applications' });
-  }
-});
+  return (
+    <div className="space-y-6">
+      <div className="grid grid-cols-4 gap-4">
+        <Card title="Total Page Views" value={data.views} />
+        <Card title="Total Users" value={data.users} />
+        <Card title="Total Services" value={data.providers} />
+        <Card title="New Applications" value={data.applications} />
+      </div>
 
-module.exports = router;
+      <div className="grid grid-cols-2 gap-6">
+        <div className="bg-gray-800 p-4 rounded-xl">
+          <h2 className="text-white text-lg mb-2">Revenue Overview</h2>
+          <ResponsiveContainer width="100%" height={250}>
+            <LineChart data={data.revenue}>
+              <XAxis dataKey="month" stroke="#ccc" />
+              <YAxis stroke="#ccc" />
+              <Tooltip />
+              <Line type="monotone" dataKey="revenue" stroke="#4fd1c5" strokeWidth={3} dot={{ r: 3 }} />
+            </LineChart>
+          </ResponsiveContainer>
+        </div>
+
+        <div className="bg-gray-800 p-4 rounded-xl">
+          <h2 className="text-white text-lg mb-2">Requested Services</h2>
+          <ResponsiveContainer width="100%" height={250}>
+            <BarChart data={data.services}>
+              <XAxis dataKey="service" stroke="#ccc" />
+              <YAxis stroke="#ccc" />
+              <Tooltip />
+              <Bar dataKey="count" fill="#68d391" />
+            </BarChart>
+          </ResponsiveContainer>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+const Card = ({ title, value }) => (
+  <div className="bg-gray-800 text-white p-6 rounded-xl">
+    <h3 className="text-sm mb-2">{title}</h3>
+    <p className="text-2xl font-bold">{value.toLocaleString()}</p>
+  </div>
+);
+
+export default Dashboard;
