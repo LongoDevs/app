@@ -15,6 +15,7 @@ model User {
   services  Service[]
   biddings  Bidding[]
   tasks     Task[]
+  emails    Email[]   // Link emails sent/received by user
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
 }
@@ -25,6 +26,8 @@ model Service {
   description String
   price       Float
   category    String?
+  image       String?  // 🌟 Image locator for the service (e.g., image URL or path)
+  emerges     Boolean  @default(false) // 🌟 New column for "emerges"
   user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId      Int
   biddings    Bidding[]
@@ -68,4 +71,6 @@ model Email {
   subject   String
   message   String
   sentAt    DateTime @default(now())
+  user      User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+  userId    Int?
 }
