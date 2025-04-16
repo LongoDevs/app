@@ -1,32 +1,35 @@
 const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
 
-async function seedServices() {
+module.exports = async function () {
+  const users = await prisma.user.findMany();
+
+  if (!users.length) {
+    console.warn(' No users found, skipping services seeding.');
+    return;
+  }
+
   await prisma.service.createMany({
     data: [
       {
-        title: 'Garden Cleaning',
-        description: 'Professional gardening and landscaping',
-        price: 500.0,
-        userId: 1,
+        title: 'Logo Design',
+        description: 'Professional logo design for your brand.',
+        price: 750.0,
+        category: 'Design',
+        userId: users[0].id,
       },
       {
-        title: 'Private Math Tutor',
-        description: 'High school math tutoring',
-        price: 300.0,
-        userId: 2,
+        title: 'Website Development',
+        description: 'Get your website built using modern tools.',
+        price: 2500.0,
+        category: 'Web Development',
+        userId: users[1].id,
       },
     ],
   });
-}
 
-seedServices()
-  .then(() => {
-    console.log('Services seeded.');
-    prisma.$disconnect();
-  })
-  .catch((e) => {
-    console.error(e);
-    prisma.$disconnect();
-    process.exit(1);
-  });
+  console.log(' Services seeded!');
+};
+
+
+
