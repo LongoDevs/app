@@ -1,43 +1,54 @@
-// src/pages/Dashboard.jsx
-import React, { useEffect, useState } from 'react';
-import { getDashboardData } from '@/services/dashboard/getDashboardData';
+// server/routes/dashboard.js
+const express = require('express');
+const router = express.Router();
+const { PrismaClient } = require('@prisma/client');
 
-const Dashboard = () => {
-  const [data, setData] = useState({
-    users: 0,
-    providers: 0,
-    views: 0,
-    applications: 0
-  });
+const prisma = new PrismaClient();
 
-  useEffect(() => {
-    const fetchData = async () => {
-      const dashboardData = await getDashboardData();
-      setData(dashboardData);
-    };
-    fetchData();
-  }, []);
+router.get('/users', async (req, res) => {
+  try {
+    const count = await prisma.user.count();
+    res.json({ count });
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to fetch user count' });
+  }
+});
 
-  return (
-    <div className="grid gap-4 grid-cols-2 md:grid-cols-4">
-      <div className="p-4 bg-white dark:bg-gray-900 rounded shadow">
-        <h4 className="text-sm font-semibold">Users</h4>
-        <p className="text-2xl font-bold">{data.users}</p>
-      </div>
-      <div className="p-4 bg-white dark:bg-gray-900 rounded shadow">
-        <h4 className="text-sm font-semibold">Service Providers</h4>
-        <p className="text-2xl font-bold">{data.providers}</p>
-      </div>
-      <div className="p-4 bg-white dark:bg-gray-900 rounded shadow">
-        <h4 className="text-sm font-semibold">Page Views</h4>
-        <p className="text-2xl font-bold">{data.views}</p>
-      </div>
-      <div className="p-4 bg-white dark:bg-gray-900 rounded shadow">
-        <h4 className="text-sm font-semibold">New Applications</h4>
-        <p className="text-2xl font-bold">{data.applications}</p>
-      </div>
-    </div>
-  );
-};
+router.get('/service-providers', async (req, res) => {
+  try {
+    const count = await prisma.serviceProvider.count();
+    res.json({ count });
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to fetch provider count' });
+  }
+});
 
-export default Dashboard;
+router.get('/page-views', async (req, res) => {
+  try {
+    const views = await prisma.pageView.aggregate({
+      _sum: {
+        count: true,
+      },
+    });
+    res.json({ views: views._sum.count || 0 });
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to fetch page views' });
+  }
+});
+
+router.get('/new-applications', async (req, res) => {
+  try {
+    const total = await prisma.application.count({
+      where: {
+        createdAt: {
+          gte: new Date(new Date().setDate(new Date().getDate() - 7)), // last 7 days
+        },
+      },
+    });
+    res.json({ total });
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to fetch new applications' });
+  }
+});
+
+module.exports = router;
