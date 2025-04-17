@@ -1,17 +1,17 @@
 [
   {
     "key": "welcome",
-    "subject": "Welcome to Our Platform!",
-    "body": "Hi {{name}},\n\nThanks for joining us. We’re excited to have you on board."
+    "subject": "This is LONGO!💡",
+    "body": "Greetings {{name}}😃,\n\nWe're honored to have you using this platform. Longo's no.1 goal is to see you HAPPY!"
   },
   {
     "key": "service-update",
-    "subject": "Important Service Update",
-    "body": "Dear {{name}},\n\nPlease be informed of a new update to our service offerings."
+    "subject": "SERVICE UPDATE!🚨",
+    "body": "Hey {{name}},\n\nWe've just found a MUCH better way to serve you! There's a new update to our service offerings!"
   },
   {
     "key": "newsletter",
-    "subject": "Monthly Newsletter",
-    "body": "Hello {{name}},\n\nHere’s what’s new this month!"
+    "subject": "LONGO News🗞",
+    "body": "Hey {{name}},\n\nHere's whats new in the world of LONGO!🌍"
   }
 ]

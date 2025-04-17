@@ -4,3 +4,8 @@
     "express": "^5.1.0"
   }
 }
+
+"prisma": {
+  "seed": "node prisma/seed.js"
+}
+

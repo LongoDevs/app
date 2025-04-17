@@ -1,30 +1,21 @@
 const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
 
-async function seedUsers() {
+module.exports = async function () {
   await prisma.user.createMany({
     data: [
       {
-        name: 'Alice',
+        name: 'Alice Johnson',
         email: 'alice@example.com',
-        password: 'hashedpassword123',
+        password: 'password123', // You can hash this later
       },
       {
-        name: 'Bob',
+        name: 'Bob Smith',
         email: 'bob@example.com',
-        password: 'hashedpassword456',
+        password: 'securepass456',
       },
     ],
   });
-}
 
-seedUsers()
-  .then(() => {
-    console.log('Users seeded.');
-    prisma.$disconnect();
-  })
-  .catch((e) => {
-    console.error(e);
-    prisma.$disconnect();
-    process.exit(1);
-  });
+  console.log(' Users seeded!');
+};
