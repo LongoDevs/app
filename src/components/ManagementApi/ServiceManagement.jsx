@@ -5,18 +5,18 @@ const ServiceManagement = () => {
   const [services, setServices] = useState([]);
 
   useEffect(() => {
-    axios.get('/api/admin/services') // update with your route
+    axios.get('../api/admin/services') // update with your route
       .then(res => setServices(res.data))
       .catch(err => console.error(err));
   }, []);
 
   const handleApprove = async (serviceId) => {
-    await axios.patch(`/api/admin/services/${serviceId}/approve`);
+    await axios.patch(`../api/admin/services/${serviceId}/approve`);
     alert('Service approved');
   };
 
   const handleReject = async (serviceId) => {
-    await axios.patch(`/api/admin/services/${serviceId}/reject`);
+    await axios.patch(`../api/admin/services/${serviceId}/reject`);
     alert('Service rejected');
   };
 
