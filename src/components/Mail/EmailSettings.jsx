@@ -11,7 +11,7 @@ const EmailSettings = () => {
   });
 
   useEffect(() => {
-    axios.get('/api/Email-configuration/email-config')
+    axios.get('../api/Email-configuration/email-config')
       .then(res => setConfig(res.data))
       .catch(err => console.error(err));
   }, []);
@@ -24,7 +24,7 @@ const EmailSettings = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.post('/api/Email-configuration/email-config', config);
+      await axios.post('../api/Email-configuration/email-config', config);
       alert('SMTP configuration saved successfully.');
     } catch (err) {
       console.error(err);
