@@ -6,7 +6,7 @@ import axios from 'axios';
 const Header = ({ darkMode, setDarkMode, navigate }) => {
   const handleLogout = async () => {
     if (confirm('Are you sure you want to logout?')) {
-      await axios.post('/api/auth/logout');
+      await axios.post('../api/auth/logout');
       sessionStorage.clear();
       navigate('/login');
     }
