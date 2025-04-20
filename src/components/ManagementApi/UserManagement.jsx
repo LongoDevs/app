@@ -5,18 +5,18 @@ const UserManagement = () => {
   const [users, setUsers] = useState([]);
 
   useEffect(() => {
-    axios.get('/api/admin/users') // update with your route
+    axios.get('../api/admin/users') // update with your route
       .then(res => setUsers(res.data))
       .catch(err => console.error(err));
   }, []);
 
   const handleSuspend = async (userId) => {
-    await axios.patch(`/api/admin/users/${userId}/suspend`);
+    await axios.patch(`../api/admin/users/${userId}/suspend`);
     alert('User suspended');
   };
 
   const handleDelete = async (userId) => {
-    await axios.delete(`/api/admin/users/${userId}`);
+    await axios.delete(`../api/admin/users/${userId}`);
     alert('User deleted');
   };
 
