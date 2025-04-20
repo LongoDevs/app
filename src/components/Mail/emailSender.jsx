@@ -10,11 +10,11 @@ const EmailSender = () => {
 
   // Fetch users and email templates
   useEffect(() => {
-    axios.get('/api/users') // Endpoint to list users
+    axios.get('../api/users') // Endpoint to list users
       .then(res => setUsers(res.data))
       .catch(err => console.error('Error fetching users:', err));
 
-    axios.get('/api/email-templates') // Endpoint to get email templates
+    axios.get('../api/email-templates') // Endpoint to get email templates
       .then(res => setTemplates(res.data))
       .catch(err => console.error('Error fetching templates:', err));
   }, []);
@@ -29,7 +29,7 @@ const EmailSender = () => {
   // Handle the sending of emails
   const handleSend = async () => {
     try {
-      const response = await axios.post('/api/Email-configuration/send-email', {
+      const response = await axios.post('../api/Email-configuration/send-email', {
         target,
         userIds: selected,
         templateKey
