@@ -76,3 +76,37 @@ model Email {
   user      User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
   userId    Int?
 }
+
+model Reward {
+  id          Int      @id @default(autoincrement())
+  title       String
+  description String
+  pointsCost  Int
+  claimedBy   User[]   @relation("UserClaimedRewards", references: [id])
+  createdAt   DateTime @default(now())
+}
+
+model Notification {
+  id        Int      @id @default(autoincrement())
+  title     String
+  message   String
+  isRead    Boolean  @default(false)
+  userId    Int
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model User {
+  id            Int       @id @default(autoincrement())
+  name          String
+  email         String    @unique
+  password      String
+  points        Int       @default(0)        // Gamification points
+  level         Int       @default(1)        // Gamification level
+  notifications Notification[]
+  claimedRewards Reward[] @relation("UserClaimedRewards")
+  // (Other existing fields like services, tasks, etc.)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+}
