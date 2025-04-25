@@ -1,6 +1,10 @@
 const express = require('express');
 const router = express.Router();
 const gamificationController = require('../controllers/gamificationController');
+const authMiddleware = require('../middleware/authMiddleware');
+
+router.get('/points', authMiddleware, gamificationController.getUserGamificationData);
+router.post('/claim', authMiddleware, gamificationController.claimReward);
 
 // Get user gamification data (points, level, reward status)
 router.get('/user', gamificationController.getUserGamification);
