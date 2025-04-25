@@ -10,6 +10,9 @@ const gamificationRoutes = require('./routes/gamificationRoutes');
 const app = express();
 const port = process.env.PORT || 3000;
 
+const notificationRoutes = require('./routes/notificationRoutes');
+app.use('/api', notificationRoutes);
+
 app.use(cors());
 app.use(express.json());
 
