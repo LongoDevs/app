@@ -11,4 +11,9 @@ router.get('/leaderboard', gamificationController.getLeaderboard);
 // Claim a reward
 router.post('/claim-reward', gamificationController.claimReward);
 
+router.get('/points', gamificationController.getUserGamificationData);
+router.get('/leaderboard', gamificationController.getLeaderboard);
+router.get('/rewards', gamificationController.getRewards);
+router.post('/claim', gamificationController.claimReward);
+
 module.exports = router;
