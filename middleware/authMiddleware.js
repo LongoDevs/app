@@ -56,3 +56,23 @@ const protect = (req, res, next) => {
   }
 };
 module.exports = { protect };
+
+const jwt = require('jsonwebtoken');
+
+module.exports = (req, res, next) => {
+  const authHeader = req.headers.authorization;
+
+  if (!authHeader) {
+    return res.status(401).json({ message: 'Authorization header missing' });
+  }
+
+  const token = authHeader.split(' ')[1]; // Format: Bearer TOKEN
+
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    req.user = decoded; // Attach user info to request
+    next(); // Continue
+  } catch (err) {
+    res.status(401).json({ message: 'Invalid or expired token' });
+  }
+};
