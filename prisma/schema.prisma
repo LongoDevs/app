@@ -18,6 +18,16 @@ model User {
   emails    Email[]   // Link emails sent/received by user
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
+    points    Int        @default(0)
+  level     Int        @default(1)
+  rewards   RewardClaim[]
+}
+
+model Reward {
+  id          Int     @id @default(autoincrement())
+  name        String
+  cost        Int
+  description String
 }
 
 model Service {
