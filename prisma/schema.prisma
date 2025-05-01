@@ -8,26 +8,38 @@ datasource db {
 }
 
 model User {
-  id        Int       @id @default(autoincrement())
-  name      String
-  email     String    @unique
-  password  String
-  services  Service[]
-  biddings  Bidding[]
-  tasks     Task[]
-  emails    Email[]   // Link emails sent/received by user
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
-    points    Int        @default(0)
-  level     Int        @default(1)
-  rewards   RewardClaim[]
+  id             Int              @id @default(autoincrement())
+  name           String
+  email          String           @unique
+  password       String
+  services       Service[]
+  biddings       Bidding[]
+  tasks          Task[]
+  emails         Email[]
+  notifications  Notification[]
+  claimedRewards RewardClaim[]
+  points         Int              @default(0)
+  level          Int              @default(1)
+  createdAt      DateTime         @default(now())
+  updatedAt      DateTime         @updatedAt
 }
 
 model Reward {
-  id          Int     @id @default(autoincrement())
-  name        String
-  cost        Int
+  id          Int            @id @default(autoincrement())
+  title       String
   description String
+  pointsCost  Int
+  claimedBy   RewardClaim[]
+  createdAt   DateTime        @default(now())
+}
+
+model RewardClaim {
+  id        Int      @id @default(autoincrement())
+  reward    Reward   @relation(fields: [rewardId], references: [id])
+  rewardId  Int
+  user      User     @relation(fields: [userId], references: [id])
+  userId    Int
+  createdAt DateTime @default(now())
 }
 
 model Service {
@@ -36,8 +48,8 @@ model Service {
   description String
   price       Float
   category    String?
-  image       String?  // 🌟 Image locator for the service (e.g., image URL or path)
-  emerges     Boolean  @default(false) // 🌟 New column for "emerges"
+  image       String?
+  emerges     Boolean  @default(false)
   user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId      Int
   biddings    Bidding[]
@@ -66,17 +78,6 @@ model Task {
   updatedAt   DateTime @updatedAt
 }
 
-model Admin {
-  id          String   @id @default(uuid())
-  name        String
-  email       String   @unique
-  password    String
-  role        String   // 'superadmin' or 'admin'
-  permissions Json     // Permissions object
-  createdAt   DateTime @default(now())
-}
-
-
 model Email {
   id        Int      @id @default(autoincrement())
   to        String
@@ -87,72 +88,23 @@ model Email {
   userId    Int?
 }
 
-model Reward {
-  id          Int      @id @default(autoincrement())
-  title       String
-  description String
-  pointsCost  Int
-  claimedBy   User[]   @relation("UserClaimedRewards", references: [id])
-  createdAt   DateTime @default(now())
-}
-
 model Notification {
   id        Int      @id @default(autoincrement())
   title     String
   message   String
   isRead    Boolean  @default(false)
-  userId    Int
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    Int
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
 
-model User {
-  id            Int       @id @default(autoincrement())
-  name          String
-  email         String    @unique
-  password      String
-  points        Int       @default(0)        // Gamification points
-  level         Int       @default(1)        // Gamification level
-  notifications Notification[]
-  claimedRewards Reward[] @relation("UserClaimedRewards")
-  // (Other existing fields like services, tasks, etc.)
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
+model Admin {
+  id          String   @id @default(uuid())
+  name        String
+  email       String   @unique
+  password    String
+  role        String   // 'superadmin' or 'admin'
+  permissions Json
+  createdAt   DateTime @default(now())
 }
-
-model Notification {
-  id        Int      @id @default(autoincrement())
-  title     String
-  message   String
-  isRead    Boolean  @default(false)
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId    Int
-  createdAt DateTime @default(now())
-}
-
-model Reward {
-  id          Int      @id @default(autoincrement())
-  title       String
-  description String
-  pointsCost  Int
-  claimedBy   RewardClaim[]
-}
-
-model RewardClaim {
-  id        Int      @id @default(autoincrement())
-  reward    Reward   @relation(fields: [rewardId], references: [id])
-  rewardId  Int
-  user      User     @relation(fields: [userId], references: [id])
-  userId    Int
-  createdAt DateTime @default(now())
-}
-
-model UserPoints {
-  id        Int     @id @default(autoincrement())
-  user      User    @relation(fields: [userId], references: [id])
-  userId    Int     @unique
-  points    Int     @default(0)
-  level     Int     @default(1)
-}
-
