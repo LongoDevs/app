@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 
+// Gamification Controllers
 const { rateUser } = require('../api/gamification/controllers/ratingController');
 const {
   getAllUsers,
@@ -8,21 +9,25 @@ const {
   getLeaderboard
 } = require('../api/gamification/controllers/userController');
 
-// Root welcome route
+// Import other routes
+const notificationRoutes = require('./notificationRoutes'); // 🆕 Notifications
+// const taskTrackingRoutes = require('./taskTrackingRoutes'); // 🆕 (Later if you add Task Tracking)
+
+// Root Welcome Route
 router.get('/', (req, res) => {
   res.send('Welcome to the Longo App API!');
 });
 
-// Get all users
+// Gamification Routes
 router.get('/users', getAllUsers);
-
-// Get nearby users
 router.get('/users/nearby', getNearbyUsers);
-
-// Leaderboard endpoint
 router.get('/leaderboard', getLeaderboard);
-
-// Submit rating
 router.post('/rate/:userId', rateUser);
+
+// Notifications Routes (new)
+router.use('/notifications', notificationRoutes);
+
+// Task Tracking Routes (future)
+// router.use('/tasks', taskTrackingRoutes);
 
 module.exports = router;
