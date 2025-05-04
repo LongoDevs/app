@@ -11,6 +11,7 @@ const {
 
 // Import other routes
 const notificationRoutes = require('./notificationRoutes'); // 🆕 Notifications
+const biddingRoutes = require('./biddingRoutes'); // 🆕 Bidding
 // const taskTrackingRoutes = require('./taskTrackingRoutes'); // 🆕 (Later if you add Task Tracking)
 
 // Root Welcome Route
@@ -24,8 +25,11 @@ router.get('/users/nearby', getNearbyUsers);
 router.get('/leaderboard', getLeaderboard);
 router.post('/rate/:userId', rateUser);
 
-// Notifications Routes (new)
+// Notifications Routes
 router.use('/notifications', notificationRoutes);
+
+// Bidding Routes
+router.use('/bidding', biddingRoutes);
 
 // Task Tracking Routes (future)
 // router.use('/tasks', taskTrackingRoutes);
