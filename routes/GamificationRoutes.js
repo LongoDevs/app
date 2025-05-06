@@ -1,18 +1,11 @@
 const express = require('express');
 const router = express.Router();
-const controller = require('../controllers/gamificationController');
-const auth = require('../middleware/authMiddleware');
+const { protect } = require('../middleware/authMiddleware');
 
-// Get user points and level
-router.get('/gamification-data', auth, controller.getUserGamificationData);
-
-// Get top 10 users by points
-router.get('/leaderboard', controller.getLeaderboard);
-
-// Get all available rewards
-router.get('/rewards', controller.getRewards);
-
-// Claim a reward (authenticated)
-router.post('/claim-reward', auth, controller.claimReward);
+// Dummy controllers (replace these with actual logic later)
+router.get('/gamification-data', protect, (req, res) => res.json({ points: 50 }));
+router.get('/leaderboard', (req, res) => res.json([{ user: 'TopUser', points: 100 }]));
+router.get('/rewards', (req, res) => res.json(['Badge', 'Discount']));
+router.post('/claim-reward', protect, (req, res) => res.json({ message: 'Reward claimed!' }));
 
 module.exports = router;

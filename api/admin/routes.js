@@ -23,6 +23,7 @@ router.put('/users/:id/role', adminController.updateRole);
 router.put('/users/:id/suspend', adminController.suspendUser);
 router.delete('/users/:id', adminController.deleteUser);
 
+
 // Settings Management
 router.post('/settings', adminController.saveSettings);
 

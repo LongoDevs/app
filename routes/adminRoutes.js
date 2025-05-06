@@ -5,6 +5,13 @@ const { registerAdmin, loginAdmin, getAdminProfile } = require('../controllers/a
 const { protect } = require('../middleware/authMiddleware');
 const notificationController = require('../controllers/notificationController');
 
+console.log('Handlers:', {
+    createNotification: typeof notificationController.createNotification,
+    getUnreadNotifications: typeof notificationController.getUnreadNotifications,
+    getAllNotifications: typeof notificationController.getAllNotifications,
+    markNotificationAsRead: typeof notificationController.markNotificationAsRead,
+  });
+  
 // Admin authentication
 router.post('/admin/register', registerAdmin);
 router.post('/admin/login', loginAdmin);
