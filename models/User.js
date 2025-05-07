@@ -1,5 +1,4 @@
 // backend/models/user.js
-const { db, admin } = require('../utils/firebase');
 
 class User {
   static async create(userData) {

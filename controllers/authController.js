@@ -1,4 +1,3 @@
-const { admin } = require('../utils/firebase');
 const User = require('../models/User');
 
 exports.register = async (req, res) => {
@@ -100,7 +99,6 @@ exports.sendVerificationEmail = async (req, res) => {
   
   module.exports = { addUser };
 
-  const { db } = require('../utils/firebase');
 
   const getUsersByRole = async (role) => {
     try {
@@ -126,7 +124,6 @@ exports.sendVerificationEmail = async (req, res) => {
   
   module.exports = { getUsersByRole };
   
-  const { db } = require('../utils/firebase');
 
   const updateUserPoints = async (userId, pointsDelta) => {
     try {
@@ -144,7 +141,6 @@ exports.sendVerificationEmail = async (req, res) => {
   
   module.exports = { updateUserPoints };
 
-  const { db } = require('../utils/firebase');
 
   const deleteUser = async (userId) => {
     try {

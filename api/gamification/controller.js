@@ -14,11 +14,6 @@ exports.getAllUsers = async (req, res) => {
 };
 
 // ==============================
-// Helper Function for Radians (for location later if needed)
-// ==============================
-const toRad = (value) => (value * Math.PI) / 180;
-
-// ==============================
 // Get Leaderboard
 // ==============================
 exports.getLeaderboard = async (req, res) => {
@@ -50,14 +45,12 @@ exports.rateUser = async (req, res) => {
     const { userId } = req.params;
     const ratingRaw = req.body.rating;
 
-    // Force cast to number
     const rating = Number(ratingRaw);
 
     if (isNaN(rating) || rating < 1 || rating > 10) {
       return res.status(400).json({ message: 'Rating must be between 1 and 10.' });
     }
 
-    // Find user by ID
     const user = await prisma.user.findUnique({
       where: { id: parseInt(userId) }
     });
@@ -66,39 +59,27 @@ exports.rateUser = async (req, res) => {
       return res.status(404).json({ message: 'User not found' });
     }
 
-    // Defensive defaults
-    const currentPoints = Number(user.points ?? 0);
-    const currentCount = Number(user.ratings_count ?? 0);
+    // Existing values
+    const currentPoints = user.points ?? 0;
+    const currentCount = user.ratings_count ?? 0;
 
     const updatedPoints = currentPoints + rating;
     const updatedCount = currentCount + 1;
+    const updatedAverage = parseFloat((updatedPoints / updatedCount).toFixed(2));
 
-    let updatedAverage = 0;
-    if (updatedCount > 0) {
-      updatedAverage = parseFloat((updatedPoints / updatedCount).toFixed(2));
-    }
+    // Optional: auto-increase level
+    let updatedLevel = user.level;
+    if (updatedPoints >= 1000) updatedLevel = 4;
+    else if (updatedPoints >= 500) updatedLevel = 3;
+    else if (updatedPoints >= 100) updatedLevel = 2;
 
-    console.log({
-      ratingRaw,
-      rating,
-      currentPoints,
-      currentCount,
-      updatedPoints,
-      updatedCount,
-      updatedAverage
-    });
-
-    if (isNaN(updatedAverage)) {
-      return res.status(500).json({ message: '❌ NaN detected — check inputs above' });
-    }
-
-    // Update user
     const updatedUser = await prisma.user.update({
       where: { id: parseInt(userId) },
       data: {
         points: updatedPoints,
         ratings_count: updatedCount,
-        average_rating: updatedAverage
+        average_rating: updatedAverage,
+        level: updatedLevel
       }
     });
 

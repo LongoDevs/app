@@ -1,4 +1,3 @@
-const { db } = require('../utils/firebase');
 
 class User {
   static async create(userData) {

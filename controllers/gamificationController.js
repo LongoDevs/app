@@ -1,7 +1,9 @@
-const { PrismaClient } = require('@prisma/client');
-const prisma = new PrismaClient();
+// Load the shared Prisma instance
+const prisma = require('../database/prisma'); // ✅ Adjust path if needed
 
-// Get user points and level from userPoints table
+// ==============================
+// Get user gamification data
+// ==============================
 exports.getUserGamificationData = async (req, res) => {
   const userId = req.user.id;
 
@@ -14,12 +16,14 @@ exports.getUserGamificationData = async (req, res) => {
   }
 };
 
-// Get leaderboard (top 10 users by points)
+// ==============================
+// Get leaderboard (top 10 users)
+// ==============================
 exports.getLeaderboard = async (req, res) => {
   try {
     const leaderboard = await prisma.userPoints.findMany({
       orderBy: { points: 'desc' },
-      include: { user: true }, // Assuming user relation exists
+      include: { user: true }, // Assumes userPoints has relation to user
       take: 10,
     });
     res.json(leaderboard);
@@ -28,7 +32,9 @@ exports.getLeaderboard = async (req, res) => {
   }
 };
 
+// ==============================
 // Get all available rewards
+// ==============================
 exports.getRewards = async (req, res) => {
   try {
     const rewards = await prisma.reward.findMany();
@@ -38,7 +44,9 @@ exports.getRewards = async (req, res) => {
   }
 };
 
+// ==============================
 // Claim a reward
+// ==============================
 exports.claimReward = async (req, res) => {
   const userId = req.user.id;
   const rewardId = parseInt(req.body.rewardId);
@@ -68,5 +76,23 @@ exports.claimReward = async (req, res) => {
     res.json({ message: 'Reward claimed successfully!' });
   } catch (err) {
     res.status(500).json({ error: 'Error claiming reward' });
+  }
+};
+
+// ==============================
+// Get all users with gamification
+// ==============================
+exports.getAllUsersWithGamification = async (req, res) => {
+  try {
+    const users = await prisma.userPoints.findMany({
+      include: {
+        user: true, // Ensure the relation exists in schema.prisma
+      },
+    });
+
+    res.status(200).json(users);
+  } catch (err) {
+    console.error('❌ Error fetching all user gamification data:', err);
+    res.status(500).json({ error: 'Failed to fetch user gamification data' });
   }
 };

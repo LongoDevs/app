@@ -1,6 +1,5 @@
 const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
-const bcrypt = require('bcryptjs');
 
 exports.getUsers = async () => {
   return prisma.user.findMany();
@@ -35,7 +34,6 @@ exports.saveSettings = async (settings) => {
 };
 
 exports.createAdmin = async (adminData) => {
-  const hashedPassword = await bcrypt.hash(adminData.password, 10);
 
   return prisma.user.create({
     data: {

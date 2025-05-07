@@ -1,5 +1,4 @@
-const { admin, db } = require('../utils/firebase');
-const speakeasy = require('speakeasy');
+
 
 // Verify Firebase ID Token
 exports.verifyAuth = async (req, res, next) => {

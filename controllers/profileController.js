@@ -1,4 +1,3 @@
-const { admin, db } = require('../utils/firebase'); // Import Firebase services
 const multer = require('multer'); // For handling file uploads
 
 // Initialize Firebase Storage bucket

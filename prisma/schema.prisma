@@ -8,63 +8,66 @@ datasource db {
 }
 
 model User {
-  id             Int              @id @default(autoincrement())
+  id             Int            @id @default(autoincrement())
   name           String
-  email          String           @unique
+  email          String         @unique
   password       String
-  services       Service[]
+  points         Int            @default(0)
+  level          Int            @default(1)
+  ratings_count  Int            @default(0)  // 👈 Add this
+  average_rating Float          @default(0)  // 👈 Add this
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
   biddings       Bidding[]
-  tasks          Task[]
   emails         Email[]
   notifications  Notification[]
   claimedRewards RewardClaim[]
-  points         Int              @default(0)
-  level          Int              @default(1)
-  createdAt      DateTime         @default(now())
-  updatedAt      DateTime         @updatedAt
+  services       Service[]
+  tasks          Task[]
 }
 
+
 model Reward {
-  id          Int            @id @default(autoincrement())
+  id          Int           @id @default(autoincrement())
   title       String
   description String
   pointsCost  Int
+  createdAt   DateTime      @default(now())
   claimedBy   RewardClaim[]
-  createdAt   DateTime        @default(now())
 }
 
 model RewardClaim {
   id        Int      @id @default(autoincrement())
-  reward    Reward   @relation(fields: [rewardId], references: [id])
   rewardId  Int
-  user      User     @relation(fields: [userId], references: [id])
   userId    Int
   createdAt DateTime @default(now())
+  reward    Reward   @relation(fields: [rewardId], references: [id])
+  user      User     @relation(fields: [userId], references: [id])
 }
 
 model Service {
-  id          Int      @id @default(autoincrement())
+  id          Int       @id @default(autoincrement())
   title       String
   description String
   price       Float
   category    String?
   image       String?
-  emerges     Boolean  @default(false)
-  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  emerges     Boolean   @default(false)
   userId      Int
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
   biddings    Bidding[]
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model Bidding {
   id        Int      @id @default(autoincrement())
   amount    Float
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId    Int
-  service   Service  @relation(fields: [serviceId], references: [id], onDelete: Cascade)
   serviceId Int
   createdAt DateTime @default(now())
+  service   Service  @relation(fields: [serviceId], references: [id], onDelete: Cascade)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model Task {
@@ -72,20 +75,20 @@ model Task {
   title       String
   description String
   isComplete  Boolean  @default(false)
-  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId      Int
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model Email {
-  id        Int      @id @default(autoincrement())
-  to        String
-  subject   String
-  message   String
-  sentAt    DateTime @default(now())
-  user      User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
-  userId    Int?
+  id      Int      @id @default(autoincrement())
+  to      String
+  subject String
+  message String
+  sentAt  DateTime @default(now())
+  userId  Int?
+  user    User?    @relation(fields: [userId], references: [id])
 }
 
 model Notification {
@@ -93,10 +96,10 @@ model Notification {
   title     String
   message   String
   isRead    Boolean  @default(false)
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId    Int
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model Admin {
@@ -104,7 +107,7 @@ model Admin {
   name        String
   email       String   @unique
   password    String
-  role        String   // 'superadmin' or 'admin'
+  role        String
   permissions Json
   createdAt   DateTime @default(now())
 }
